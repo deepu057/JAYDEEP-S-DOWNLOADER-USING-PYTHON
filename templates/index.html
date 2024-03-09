@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Video Downloader</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #555;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  input[type="text"] {
+    width: calc(100% - 80px);
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+  }
+  progress {
+    width: 100%;
+    height: 20px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>YouTube Video Downloader</h2>
+  <input type="text" id="videoUrl" placeholder="Paste YouTube video URL here">
+  <button onclick="downloadVideo()">Download</button>
+  <progress id="downloadProgress" value="0" max="100"></progress>
+</div>
+
+<script>
+function downloadVideo() {
+  var videoUrl = document.getElementById('videoUrl').value;
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/download', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var response = JSON.parse(xhr.responseText);
+      if (response.success) {
+        alert('Video downloaded successfully!');
+      } else {
+        alert('Failed to download video. Please try again.');
+      }
+    }
+  };
+  xhr.onprogress = function(event) {
+    var progress = (event.loaded / event.total) * 100;
+    document.getElementById('downloadProgress').value = progress;
+  };
+  xhr.send(JSON.stringify({ videoUrl: videoUrl }));
+}
+</script>
+
+</body>
+</html>
